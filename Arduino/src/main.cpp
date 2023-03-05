@@ -18,11 +18,9 @@ volatile bool shouldRead_ = false;  // Drapeau prêt à lire un message
 
 int ledState = 0;
 int potValue = 0;
-int btnValue = 0;
 
 int pinLED = 7;
 int pinPOT = A0;
-int pinBTN = 3;
 
 
 /*------------------------- Prototypes de fonctions -------------------------*/
@@ -46,7 +44,6 @@ void loop() {
   }
 
   potValue = analogRead(pinPOT);
-  btnValue = digitalRead(pinBTN);
   //Serial.println(potValue);          // debug
   delay(10);  // delais de 10 ms
 }
@@ -67,7 +64,6 @@ void sendMsg() {
   // Elements du message
   doc["time"] = millis();
   doc["analog"] = potValue;
-  doc["bouton"] = btnValue;
 
   // Serialisation
   serializeJson(doc, Serial);

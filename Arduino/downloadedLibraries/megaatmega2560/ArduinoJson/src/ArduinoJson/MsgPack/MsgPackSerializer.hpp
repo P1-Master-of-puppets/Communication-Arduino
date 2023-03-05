@@ -23,11 +23,6 @@ class MsgPackSerializer : public Visitor<size_t> {
 
   template <typename T>
   typename enable_if<sizeof(T) == 4, size_t>::type visitFloat(T value32) {
-    if (canConvertNumber<JsonInteger>(value32)) {
-      JsonInteger truncatedValue = JsonInteger(value32);
-      if (value32 == T(truncatedValue))
-        return visitSignedInteger(truncatedValue);
-    }
     writeByte(0xCA);
     writeInteger(value32);
     return bytesWritten();
@@ -37,10 +32,13 @@ class MsgPackSerializer : public Visitor<size_t> {
   ARDUINOJSON_NO_SANITIZE("float-cast-overflow")
   typename enable_if<sizeof(T) == 8, size_t>::type visitFloat(T value64) {
     float value32 = float(value64);
-    if (value32 == value64)
-      return visitFloat(value32);
-    writeByte(0xCB);
-    writeInteger(value64);
+    if (value32 == value64) {
+      writeByte(0xCA);
+      writeInteger(value32);
+    } else {
+      writeByte(0xCB);
+      writeInteger(value64);
+    }
     return bytesWritten();
   }
 
@@ -55,7 +53,7 @@ class MsgPackSerializer : public Visitor<size_t> {
       writeByte(0xDD);
       writeInteger(uint32_t(n));
     }
-    for (const VariantSlot* slot = array.head(); slot; slot = slot->next()) {
+    for (VariantSlot* slot = array.head(); slot; slot = slot->next()) {
       slot->data()->accept(*this);
     }
     return bytesWritten();
@@ -72,7 +70,7 @@ class MsgPackSerializer : public Visitor<size_t> {
       writeByte(0xDF);
       writeInteger(uint32_t(n));
     }
-    for (const VariantSlot* slot = object.head(); slot; slot = slot->next()) {
+    for (VariantSlot* slot = object.head(); slot; slot = slot->next()) {
       visitString(slot->key());
       slot->data()->accept(*this);
     }
@@ -107,9 +105,9 @@ class MsgPackSerializer : public Visitor<size_t> {
     return bytesWritten();
   }
 
-  size_t visitSignedInteger(JsonInteger value) {
+  size_t visitSignedInteger(Integer value) {
     if (value > 0) {
-      visitUnsignedInteger(static_cast<JsonUInt>(value));
+      visitUnsignedInteger(static_cast<UInt>(value));
     } else if (value >= -0x20) {
       writeInteger(int8_t(value));
     } else if (value >= -0x80) {
@@ -137,7 +135,7 @@ class MsgPackSerializer : public Visitor<size_t> {
     return bytesWritten();
   }
 
-  size_t visitUnsignedInteger(JsonUInt value) {
+  size_t visitUnsignedInteger(UInt value) {
     if (value <= 0x7F) {
       writeInteger(uint8_t(value));
     } else if (value <= 0xFF) {
@@ -197,23 +195,19 @@ class MsgPackSerializer : public Visitor<size_t> {
   CountingDecorator<TWriter> _writer;
 };
 
-// Produces a MessagePack document.
-// https://arduinojson.org/v6/api/msgpack/serializemsgpack/
-template <typename TDestination>
-inline size_t serializeMsgPack(JsonVariantConst source, TDestination& output) {
+template <typename TSource, typename TDestination>
+inline size_t serializeMsgPack(const TSource& source, TDestination& output) {
   return serialize<MsgPackSerializer>(source, output);
 }
 
-// Produces a MessagePack document.
-// https://arduinojson.org/v6/api/msgpack/serializemsgpack/
-inline size_t serializeMsgPack(JsonVariantConst source, void* output,
+template <typename TSource>
+inline size_t serializeMsgPack(const TSource& source, void* output,
                                size_t size) {
   return serialize<MsgPackSerializer>(source, output, size);
 }
 
-// Computes the length of the document that serializeMsgPack() produces.
-// https://arduinojson.org/v6/api/msgpack/measuremsgpack/
-inline size_t measureMsgPack(JsonVariantConst source) {
+template <typename TSource>
+inline size_t measureMsgPack(const TSource& source) {
   return measure<MsgPackSerializer>(source);
 }
 

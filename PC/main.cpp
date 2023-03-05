@@ -15,7 +15,7 @@ using namespace std;
 using json = nlohmann::json;
 
 /*------------------------------ Constantes ---------------------------------*/
-#define BAUD 9600           // Frequence de transmission serielle (bits)
+#define BAUD 9600           // Frequence de transmission serielle
 #define MSG_MAX_SIZE 1024   // Longueur maximale d'un message
 
 
@@ -45,11 +45,11 @@ int main(){
     }
     
     // Structure de donnees JSON pour envoie et reception
-    int led_state = 0;
+    int led_state = 1;
     json j_msg_send, j_msg_rcv;
 
     // Boucle pour tester la communication bidirectionnelle Arduino-PC
-    for(int i=0; i<100; i++){
+    for(int i=0; i<10; i++){
         // Envoie message Arduino
         j_msg_send["led"] = led_state;
         if(!SendToSerial(arduino, j_msg_send)){
@@ -73,7 +73,7 @@ int main(){
         led_state = !led_state;
 
         // Bloquer le fil pour environ 1 sec
-        Sleep(100); // 100ms=10Hz
+        Sleep(1000); // 1000ms
     }
     return 0;
 }

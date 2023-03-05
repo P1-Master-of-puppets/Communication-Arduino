@@ -15,6 +15,3 @@
 # Used by CI for Particle
 /src/*.ino
 /project.properties
-
-# Used by IDF
-/dist/
