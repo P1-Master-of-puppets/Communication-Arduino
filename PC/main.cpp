@@ -47,13 +47,28 @@ int main()
     // Structure de donnees JSON pour envoie et reception
     int led_state = 1;
     int threatLevel = 1;
+    int valeurSG = 0;
+    int tempsMV = 100;
     json j_msg_send, j_msg_rcv;
 
     // Boucle pour tester la communication bidirectionnelle Arduino-PC
     for (int i = 0; i < 10; i++)
     {
         // Envoie message Arduino #######################
+        // Threat level
         j_msg_send["T"] = threatLevel;
+        if (!SendToSerial(arduino, j_msg_send))
+        {
+            cerr << "Erreur lors de l'envoie du message. " << endl;
+        }
+        // Seven segments
+        j_msg_send["SG"] = valeurSG;
+        if (!SendToSerial(arduino, j_msg_send))
+        {
+            cerr << "Erreur lors de l'envoie du message. " << endl;
+        }
+        // Moteur vibrant
+        j_msg_send["MV"] = tempsMV;
         if (!SendToSerial(arduino, j_msg_send))
         {
             cerr << "Erreur lors de l'envoie du message. " << endl;

@@ -16,6 +16,7 @@
 
 volatile bool shouldSend_ = false; // Drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false; // Drapeau prêt à lire un message
+int btnA, btnB, btnM, btnLT, btnRT, btnJB;
 
 /*------------------------- Prototypes de fonctions -------------------------*/
 void sendMsg();
@@ -39,7 +40,12 @@ void loop()
     readMsg();
     sendMsg();
   }
-
+  btnA = digitalRead(PIN_BTN_A);
+  btnB = digitalRead(PIN_BTN_B);
+  btnM = digitalRead(PIN_BTN_M);
+  btnRT = digitalRead(PIN_BTN_RT);
+  btnLT = digitalRead(PIN_BTN_LT);
+  btnJB = digitalRead(PIN_BTN_JB);
   // potValue = analogRead(pinPOT);
   // Serial.println(potValue);          // debug
   delay(10); // delais de 10 ms
@@ -61,6 +67,12 @@ void sendMsg()
   // Elements du message
   // doc["time"] = millis();
   // doc["analog"] = potValue;
+  doc["A"] = btnA;
+  doc["B"] = btnB;
+  doc["M"] = btnM;
+  doc["RT"] = btnRT;
+  doc["LT"] = btnLT;
+  doc["JB"] = btnJB;
 
   // Serialisation
   serializeJson(doc, Serial);
@@ -124,4 +136,14 @@ void readMsg()
     Compteur SG;
     SG.Setup(doc["SG"].as<int>());
   }
+
+  // Moteur vibrant Comment le faire vibrer pour un certain temps?
+  /*
+  parse_msg = doc["V"];
+  if (!parse_msg.isNull())
+  {
+    int tempsON = doc["V"].as<int>();
+    int tempsFIN = millis() + tempsON;
+  }
+  */
 }

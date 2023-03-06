@@ -37,7 +37,7 @@
 #define PIN_BTN_LT 22
 
 // Bouton RT
-#define PIN_BTN_LT 23
+#define PIN_BTN_RT 23
 
 // Bouton Joystick
 #define PIN_BTN_JB 24
