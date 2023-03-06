@@ -3,6 +3,7 @@
 
 // NE PAS CREER DOBJETS DE TYPE DISPLAY, SEULEMENT APPELLER COMPTEUR EN CAS DE BESSOIN.
 #include <Arduino.h>
+#include <pinsArduino.h>
 using namespace std;
 
 class Display

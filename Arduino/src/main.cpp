@@ -17,10 +17,6 @@
 volatile bool shouldSend_ = false; // Drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false; // Drapeau prêt à lire un message
 
-int pinLEDvert = 1;
-int pinLEDjaune = 2;
-int pinLEDrouge = 3;
-
 /*------------------------- Prototypes de fonctions -------------------------*/
 void sendMsg();
 void readMsg();
@@ -106,18 +102,26 @@ void readMsg()
   {
     if (doc["T"].as<int>() == 1) // T = 1
     {
-      digitalWrite(pinLEDvert, 1);
+      digitalWrite(PIN_LEDVERT, 1);
     } 
     else if (doc["T"].as<int>() == 2) // T = 2
     {
-      digitalWrite(pinLEDvert, 1);
-      digitalWrite(pinLEDjaune, 1);
+      digitalWrite(PIN_LEDVERT, 1);
+      digitalWrite(PIN_LEDJAUNE, 1);
     } 
     else if (doc["T"].as<int>() == 3) // T = 3
     {
-      digitalWrite(pinLEDvert, 1);
-      digitalWrite(pinLEDjaune, 1);
-      digitalWrite(pinLEDrouge, 1);
+      digitalWrite(PIN_LEDVERT, 1);
+      digitalWrite(PIN_LEDJAUNE, 1);
+      digitalWrite(PIN_LEDROUGE, 1);
     }
+  }
+
+  // Seven segments
+  parse_msg = doc["SG"];
+  if (!parse_msg.isNull())
+  {
+    Compteur SG;
+    SG.Setup(doc["SG"].as<int>());
   }
 }

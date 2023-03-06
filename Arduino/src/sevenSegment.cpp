@@ -18,7 +18,6 @@ void Display::SetPins(int a, int b, int c, int d, int e, int f, int g, int dp)
 	pinMode(f, OUTPUT);
 	pinMode(g, OUTPUT);
 	pinMode(dp, OUTPUT);
-	return;
 }
 
 void Display::AllOff()
@@ -31,7 +30,6 @@ void Display::AllOff()
 	digitalWrite(f, LOW);
 	digitalWrite(g, LOW);
 	digitalWrite(dp, LOW);
-	return;
 }
 
 void Display::SetDP(bool etat)
@@ -45,7 +43,6 @@ void Display::SetDP(bool etat)
 	{
 		digitalWrite(dp, false);
 	}
-	return;
 }
 
 void Display::Set(int number)
@@ -133,14 +130,12 @@ void Display::Set(int number)
 		digitalWrite(f, HIGH);
 		break;
 	}
-	return;
 }
 
 Compteur::Compteur()
 {
-	// TODO ceci est à modifier pour les pins de l'afficheur
-	//  Afficheur1.SetPins(int a, int b, int c, int d, int e, int f, int g, int dp);
-	//  Afficheur2.SetPins(int a, int b, int c, int d, int e, int f, int g, int dp);
+	Afficheur1.SetPins(4, 5, 6, 7, 8, 9, 10, 0);
+	Afficheur2.SetPins(11, 12, 13, 14, 15, 16, 17, 0);
 	dizaines = 0;
 	unites = 0;
 }
@@ -168,7 +163,6 @@ void Compteur::Remove_1()
 	}
 	increment = increment - 1;
 	Setup(increment);
-	return;
 }
 
 void Compteur::Reset()
