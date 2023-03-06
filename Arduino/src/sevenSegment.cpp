@@ -134,8 +134,8 @@ void Display::Set(int number)
 
 Compteur::Compteur()
 {
-	Afficheur1.SetPins(4, 5, 6, 7, 8, 9, 10, 0);
-	Afficheur2.SetPins(11, 12, 13, 14, 15, 16, 17, 0);
+	Afficheur1.SetPins(PIN_SEG_1_1, PIN_SEG_1_2, PIN_SEG_1_3, PIN_SEG_1_4, PIN_SEG_1_5, PIN_SEG_1_6, PIN_SEG_1_7, 0);
+	Afficheur2.SetPins(PIN_SEG_2_1, PIN_SEG_2_2, PIN_SEG_2_3, PIN_SEG_2_4, PIN_SEG_2_5, PIN_SEG_2_6, PIN_SEG_2_7, 0);
 	dizaines = 0;
 	unites = 0;
 }
