@@ -46,18 +46,19 @@ int main()
 
     // Structure de donnees JSON pour envoie et reception
     int led_state = 1;
+    int threatLevel = 1;
     json j_msg_send, j_msg_rcv;
 
     // Boucle pour tester la communication bidirectionnelle Arduino-PC
     for (int i = 0; i < 10; i++)
     {
-        // Envoie message Arduino
-        j_msg_send["led"] = led_state;
+        // Envoie message Arduino #######################
+        j_msg_send["T"] = threatLevel;
         if (!SendToSerial(arduino, j_msg_send))
         {
             cerr << "Erreur lors de l'envoie du message. " << endl;
         }
-        // Reception message Arduino
+        // Reception message Arduino #######################
         j_msg_rcv.clear(); // effacer le message precedent
         if (!RcvFromSerial(arduino, raw_msg))
         {

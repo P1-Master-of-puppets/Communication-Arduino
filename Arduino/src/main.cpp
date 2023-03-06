@@ -6,6 +6,7 @@
 /*------------------------------ Librairies ---------------------------------*/
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <sevenSegment.h>
 
 /*------------------------------ Constantes ---------------------------------*/
 
@@ -16,11 +17,9 @@
 volatile bool shouldSend_ = false; // Drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false; // Drapeau prêt à lire un message
 
-int ledState = 0;
-int potValue = 0;
-
-int pinLED = 7;
-int pinPOT = A0;
+int pinLEDvert = 1;
+int pinLEDjaune = 2;
+int pinLEDrouge = 3;
 
 /*------------------------- Prototypes de fonctions -------------------------*/
 void sendMsg();
@@ -31,8 +30,8 @@ void serialEvent();
 void setup()
 {
   Serial.begin(BAUD); // Initialisation de la communication serielle
-  pinMode(pinLED, OUTPUT);
-  digitalWrite(pinLED, ledState);
+  // pinMode(pinLED, OUTPUT);
+  // digitalWrite(pinLED, ledState);
 }
 
 /* Boucle principale (infinie) */
@@ -45,7 +44,7 @@ void loop()
     sendMsg();
   }
 
-  potValue = analogRead(pinPOT);
+  // potValue = analogRead(pinPOT);
   // Serial.println(potValue);          // debug
   delay(10); // delais de 10 ms
 }
@@ -64,8 +63,8 @@ void sendMsg()
 {
   StaticJsonDocument<500> doc;
   // Elements du message
-  doc["time"] = millis();
-  doc["analog"] = potValue;
+  // doc["time"] = millis();
+  // doc["analog"] = potValue;
 
   // Serialisation
   serializeJson(doc, Serial);
@@ -100,10 +99,25 @@ void readMsg()
   }
 
   // Analyse des éléments du message message
-  parse_msg = doc["led"];
+
+  // Threat level
+  parse_msg = doc["T"];
   if (!parse_msg.isNull())
   {
-    // mettre la led a la valeur doc["led"]
-    digitalWrite(pinLED, doc["led"].as<bool>());
+    if (doc["T"].as<int>() == 1) // T = 1
+    {
+      digitalWrite(pinLEDvert, 1);
+    } 
+    else if (doc["T"].as<int>() == 2) // T = 2
+    {
+      digitalWrite(pinLEDvert, 1);
+      digitalWrite(pinLEDjaune, 1);
+    } 
+    else if (doc["T"].as<int>() == 3) // T = 3
+    {
+      digitalWrite(pinLEDvert, 1);
+      digitalWrite(pinLEDjaune, 1);
+      digitalWrite(pinLEDrouge, 1);
+    }
   }
 }
