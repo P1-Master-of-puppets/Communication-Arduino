@@ -11,12 +11,17 @@
 /*------------------------------ Constantes ---------------------------------*/
 
 #define BAUD 115200 // Frequence de transmission serielle
+#define J_MAX_X 10000
+#define J_MAX_Y 10000
+#define J_TAILLE_DEADZONE 1000
 
 /*---------------------------- Variables globales ---------------------------*/
 
 volatile bool shouldSend_ = false; // Drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false; // Drapeau prêt à lire un message
-int btnA, btnB, btnM, btnLT, btnRT, btnJB;
+int btnA, btnB, btnM, btnLT, btnRT, btnJB, j_x, j_y;
+unsigned long tempsFIN, currentTime;
+Compteur SG;
 
 /*------------------------- Prototypes de fonctions -------------------------*/
 void sendMsg();
@@ -46,6 +51,8 @@ void loop()
   btnRT = digitalRead(PIN_BTN_RT);
   btnLT = digitalRead(PIN_BTN_LT);
   btnJB = digitalRead(PIN_BTN_JB);
+  j_x = analogRead(PIN_J_X);
+  j_y = analogRead(PIN_J_Y);
   // potValue = analogRead(pinPOT);
   // Serial.println(potValue);          // debug
   delay(10); // delais de 10 ms
@@ -73,6 +80,39 @@ void sendMsg()
   doc["RT"] = btnRT;
   doc["LT"] = btnLT;
   doc["JB"] = btnJB;
+  // Direction du joystick
+  if (j_x < (J_MAX_X/2 - J_TAILLE_DEADZONE/2) || j_x > (J_MAX_X/2 + J_TAILLE_DEADZONE/2))
+  {
+    if (j_y < (J_MAX_Y/2 - J_TAILLE_DEADZONE)/2 || j_y > (J_MAX_Y/2 + J_TAILLE_DEADZONE/2))
+    {
+      // Côté gauche
+      if (j_x <= J_MAX_X/2 && j_y > -1 * j_x + J_MAX_Y)
+      {
+        doc["J"] = "U";
+      }
+      else if (j_x <= J_MAX_X/2 && j_y < j_x)
+      {
+        doc["J"] = "D";
+      }
+      else 
+      {
+        doc["J"] = "L";
+      }
+      // Côté droit
+      if (j_x >= J_MAX_X/2 && j_y > j_x)
+      {
+        doc["J"] = "U";
+      }
+      else if (j_x >= J_MAX_X/2 && j_y < -1 * j_x + J_MAX_Y)
+      {
+        doc["J"] = "D";
+      }
+      else
+      {
+        doc["J"] = "R";
+      }
+    }
+  }
 
   // Serialisation
   serializeJson(doc, Serial);
@@ -106,7 +146,7 @@ void readMsg()
     return;
   }
 
-  // Analyse des éléments du message message
+  // Analyse des éléments du message
 
   // Threat level
   parse_msg = doc["T"];
@@ -118,13 +158,10 @@ void readMsg()
     } 
     else if (doc["T"].as<int>() == 2) // T = 2
     {
-      digitalWrite(PIN_LEDVERT, 1);
       digitalWrite(PIN_LEDJAUNE, 1);
     } 
     else if (doc["T"].as<int>() == 3) // T = 3
     {
-      digitalWrite(PIN_LEDVERT, 1);
-      digitalWrite(PIN_LEDJAUNE, 1);
       digitalWrite(PIN_LEDROUGE, 1);
     }
   }
@@ -133,17 +170,18 @@ void readMsg()
   parse_msg = doc["SG"];
   if (!parse_msg.isNull())
   {
-    Compteur SG;
     SG.Setup(doc["SG"].as<int>());
   }
 
-  // Moteur vibrant Comment le faire vibrer pour un certain temps?
-  /*
+  // Moteur vibrant
   parse_msg = doc["V"];
   if (!parse_msg.isNull())
   {
-    int tempsON = doc["V"].as<int>();
-    int tempsFIN = millis() + tempsON;
+    tempsFIN = doc["V"].as<int>() + millis();
+    digitalWrite(PIN_MV, 1);
   }
-  */
+  else if (millis() >= tempsFIN)
+  {
+    digitalWrite(PIN_MV, 0);
+  }
 }
