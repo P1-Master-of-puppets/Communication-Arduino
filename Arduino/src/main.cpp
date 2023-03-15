@@ -11,9 +11,9 @@
 /*------------------------------ Constantes ---------------------------------*/
 
 #define BAUD 115200 // Frequence de transmission serielle
-#define J_MAX_X 10000
-#define J_MAX_Y 10000
-#define J_TAILLE_DEADZONE 1000
+#define J_MAX_X 1024
+#define J_MAX_Y 1024
+#define J_TAILLE_DEADZONE 50
 
 /*---------------------------- Variables globales ---------------------------*/
 
@@ -56,7 +56,7 @@ void setup()
   digitalWrite(PIN_LEDROUGE, HIGH);
 
   // Setup seven segments
-  SG.Setup(10);
+  SG.Setup(0);
 }
 
 /* Boucle principale (infinie) */
@@ -76,6 +76,12 @@ void loop()
   btnJB = digitalRead(PIN_BTN_JB);
   j_x = analogRead(PIN_J_X);
   j_y = analogRead(PIN_J_Y);
+  /*
+  Serial.print("j_x: ");
+  Serial.println(j_x);
+  Serial.print("j_y: ");
+  Serial.println(j_y);
+  */
   // potValue = analogRead(pinPOT);
   // Serial.println(potValue);          // debug
   delay(10); // delais de 10 ms
@@ -104,36 +110,33 @@ void sendMsg()
   doc["LT"] = btnLT;
   doc["JB"] = btnJB;
   // Direction du joystick
-  if (j_x < (J_MAX_X/2 - J_TAILLE_DEADZONE/2) || j_x > (J_MAX_X/2 + J_TAILLE_DEADZONE/2))
+  if (!(j_x > (J_MAX_X/2 - J_TAILLE_DEADZONE/2) && j_x < (J_MAX_X/2 + J_TAILLE_DEADZONE/2) && j_y > (J_MAX_Y/2 - J_TAILLE_DEADZONE/2) && j_y < (J_MAX_Y/2 + J_TAILLE_DEADZONE/2)))
   {
-    if (j_y < (J_MAX_Y/2 - J_TAILLE_DEADZONE)/2 || j_y > (J_MAX_Y/2 + J_TAILLE_DEADZONE/2))
+    // Côté gauche
+    if (j_x >= J_MAX_X/2 && j_y > j_x)
     {
-      // Côté gauche
-      if (j_x <= J_MAX_X/2 && j_y > -1 * j_x + J_MAX_Y)
-      {
-        doc["J"] = "U";
-      }
-      else if (j_x <= J_MAX_X/2 && j_y < j_x)
-      {
-        doc["J"] = "D";
-      }
-      else 
-      {
-        doc["J"] = "L";
-      }
-      // Côté droit
-      if (j_x >= J_MAX_X/2 && j_y > j_x)
-      {
-        doc["J"] = "U";
-      }
-      else if (j_x >= J_MAX_X/2 && j_y < -1 * j_x + J_MAX_Y)
-      {
-        doc["J"] = "D";
-      }
-      else
-      {
-        doc["J"] = "R";
-      }
+      doc["J"] = "U";
+    }
+    else if (j_x >= J_MAX_X/2 && j_y < -1 * j_x + J_MAX_Y)
+    {
+      doc["J"] = "D";
+    }
+    else if (j_x >= J_MAX_X/2)
+    {
+      doc["J"] = "L";
+    }
+    // Côté droit
+    if (j_x <= J_MAX_X/2 && j_y > -1 * j_x + J_MAX_Y)
+    {
+      doc["J"] = "U";
+    }
+    else if (j_x <= J_MAX_X/2 && j_y < j_x)
+    {
+      doc["J"] = "D";
+    }
+    else if (j_x <= J_MAX_X/2)
+    {
+      doc["J"] = "R";
     }
   }
 

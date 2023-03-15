@@ -8,8 +8,16 @@ Display::~Display()
 {
 }
 
-void Display::SetPins(int a, int b, int c, int d, int e, int f, int g, int dp)
+void Display::SetPins(int newA, int newB, int newC, int newD, int newE, int newF, int newG, int newDP)
 {
+	a = newA;
+	b = newB;
+	c = newC;
+	d = newD;
+	e = newE;
+	f = newF;
+	g = newG;
+	
 	pinMode(a, OUTPUT);
 	pinMode(b, OUTPUT);
 	pinMode(c, OUTPUT);
