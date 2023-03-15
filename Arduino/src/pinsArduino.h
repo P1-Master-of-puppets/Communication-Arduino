@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 // Threat level
-#define PIN_LEDVERT 1
+#define PIN_LEDVERT 26
 #define PIN_LEDJAUNE 2
 #define PIN_LEDROUGE 3
 
@@ -34,10 +34,10 @@
 #define PIN_BTN_M 21
 
 // Bouton LT
-#define PIN_BTN_LT 22
+#define PIN_BTN_LT 23
 
 // Bouton RT
-#define PIN_BTN_RT 23
+#define PIN_BTN_RT 22
 
 // Bouton Joystick
 #define PIN_BTN_JB 24

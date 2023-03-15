@@ -32,8 +32,31 @@ void serialEvent();
 void setup()
 {
   Serial.begin(BAUD); // Initialisation de la communication serielle
-  // pinMode(pinLED, OUTPUT);
-  // digitalWrite(pinLED, ledState);
+  
+  // Setup Boutons
+  pinMode(PIN_BTN_A, INPUT);
+  digitalWrite(PIN_BTN_A, LOW);
+  pinMode(PIN_BTN_B, INPUT);
+  digitalWrite(PIN_BTN_B, LOW);
+  pinMode(PIN_BTN_M, INPUT);
+  digitalWrite(PIN_BTN_M, LOW);
+  pinMode(PIN_BTN_JB, INPUT);
+  digitalWrite(PIN_BTN_JB, LOW);
+  pinMode(PIN_BTN_LT, INPUT);
+  digitalWrite(PIN_BTN_LT, LOW);
+  pinMode(PIN_BTN_RT, INPUT);
+  digitalWrite(PIN_BTN_RT, LOW);
+
+  // Setup LEDs
+  pinMode(PIN_LEDVERT, OUTPUT);
+  digitalWrite(PIN_LEDVERT, HIGH);
+  pinMode(PIN_LEDJAUNE, OUTPUT);
+  digitalWrite(PIN_LEDJAUNE, LOW);
+  pinMode(PIN_LEDROUGE, OUTPUT);
+  digitalWrite(PIN_LEDROUGE, HIGH);
+
+  // Setup seven segments
+  SG.Setup(10);
 }
 
 /* Boucle principale (infinie) */
@@ -149,18 +172,18 @@ void readMsg()
   // Analyse des éléments du message
 
   // Threat level
-  parse_msg = doc["T"];
-  if (!parse_msg.isNull())
+  parse_msg = doc["t"];
+  if (!parse_msg.isNull() || true)
   {
-    if (doc["T"].as<int>() == 1) // T = 1
+    if (doc["t"].as<int>() == 1 || true) // T = 1
     {
       digitalWrite(PIN_LEDVERT, 1);
     } 
-    else if (doc["T"].as<int>() == 2) // T = 2
+    else if (doc["t"].as<int>() == 2) // T = 2
     {
       digitalWrite(PIN_LEDJAUNE, 1);
     } 
-    else if (doc["T"].as<int>() == 3) // T = 3
+    else if (doc["t"].as<int>() == 3) // T = 3
     {
       digitalWrite(PIN_LEDROUGE, 1);
     }

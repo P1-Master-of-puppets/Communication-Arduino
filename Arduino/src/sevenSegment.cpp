@@ -22,21 +22,21 @@ void Display::SetPins(int a, int b, int c, int d, int e, int f, int g, int dp)
 
 void Display::AllOff()
 {
-	digitalWrite(a, LOW);
-	digitalWrite(b, LOW);
-	digitalWrite(c, LOW);
-	digitalWrite(d, LOW);
-	digitalWrite(e, LOW);
-	digitalWrite(f, LOW);
-	digitalWrite(g, LOW);
-	digitalWrite(dp, LOW);
+	digitalWrite(a, HIGH);
+	digitalWrite(b, HIGH);
+	digitalWrite(c, HIGH);
+	digitalWrite(d, HIGH);
+	digitalWrite(e, HIGH);
+	digitalWrite(f, HIGH);
+	digitalWrite(g, HIGH);
+	digitalWrite(dp, HIGH);
 }
 
 void Display::SetDP(bool etat)
 {
 	if (etat == true)
 	{
-		digitalWrite(dp, HIGH);
+		digitalWrite(dp, LOW);
 	}
 
 	if (etat == false)
@@ -52,82 +52,82 @@ void Display::Set(int number)
 	switch (number)
 	{
 	case 0:
-		digitalWrite(a, HIGH);
-		digitalWrite(b, HIGH);
-		digitalWrite(c, HIGH);
-		digitalWrite(d, HIGH);
-		digitalWrite(e, HIGH);
-		digitalWrite(f, HIGH);
+		digitalWrite(a, LOW);
+		digitalWrite(b, LOW);
+		digitalWrite(c, LOW);
+		digitalWrite(d, LOW);
+		digitalWrite(e, LOW);
+		digitalWrite(f, LOW);
 		break;
 
 	case 1:
-		digitalWrite(b, HIGH);
-		digitalWrite(c, HIGH);
+		digitalWrite(b, LOW);
+		digitalWrite(c, LOW);
 		break;
 
 	case 2:
-		digitalWrite(a, HIGH);
-		digitalWrite(b, HIGH);
-		digitalWrite(g, HIGH);
-		digitalWrite(d, HIGH);
-		digitalWrite(e, HIGH);
+		digitalWrite(a, LOW);
+		digitalWrite(b, LOW);
+		digitalWrite(g, LOW);
+		digitalWrite(d, LOW);
+		digitalWrite(e, LOW);
 		break;
 
 	case 3:
-		digitalWrite(a, HIGH);
-		digitalWrite(b, HIGH);
-		digitalWrite(c, HIGH);
-		digitalWrite(d, HIGH);
-		digitalWrite(g, HIGH);
+		digitalWrite(a, LOW);
+		digitalWrite(b, LOW);
+		digitalWrite(c, LOW);
+		digitalWrite(d, LOW);
+		digitalWrite(g, LOW);
 		break;
 
 	case 4:
-		digitalWrite(b, HIGH);
-		digitalWrite(c, HIGH);
-		digitalWrite(g, HIGH);
-		digitalWrite(f, HIGH);
+		digitalWrite(b, LOW);
+		digitalWrite(c, LOW);
+		digitalWrite(g, LOW);
+		digitalWrite(f, LOW);
 		break;
 
 	case 5:
-		digitalWrite(a, HIGH);
-		digitalWrite(g, HIGH);
-		digitalWrite(c, HIGH);
-		digitalWrite(d, HIGH);
-		digitalWrite(f, HIGH);
+		digitalWrite(a, LOW);
+		digitalWrite(g, LOW);
+		digitalWrite(c, LOW);
+		digitalWrite(d, LOW);
+		digitalWrite(f, LOW);
 		break;
 
 	case 6:
-		digitalWrite(a, HIGH);
-		digitalWrite(g, HIGH);
-		digitalWrite(c, HIGH);
-		digitalWrite(d, HIGH);
-		digitalWrite(e, HIGH);
-		digitalWrite(f, HIGH);
+		digitalWrite(a, LOW);
+		digitalWrite(g, LOW);
+		digitalWrite(c, LOW);
+		digitalWrite(d, LOW);
+		digitalWrite(e, LOW);
+		digitalWrite(f, LOW);
 		break;
 
 	case 7:
-		digitalWrite(a, HIGH);
-		digitalWrite(b, HIGH);
-		digitalWrite(c, HIGH);
+		digitalWrite(a, LOW);
+		digitalWrite(b, LOW);
+		digitalWrite(c, LOW);
 		break;
 
 	case 8:
-		digitalWrite(a, HIGH);
-		digitalWrite(b, HIGH);
-		digitalWrite(c, HIGH);
-		digitalWrite(d, HIGH);
-		digitalWrite(e, HIGH);
-		digitalWrite(f, HIGH);
-		digitalWrite(g, HIGH);
+		digitalWrite(a, LOW);
+		digitalWrite(b, LOW);
+		digitalWrite(c, LOW);
+		digitalWrite(d, LOW);
+		digitalWrite(e, LOW);
+		digitalWrite(f, LOW);
+		digitalWrite(g, LOW);
 		break;
 
 	case 9:
-		digitalWrite(a, HIGH);
-		digitalWrite(b, HIGH);
-		digitalWrite(c, HIGH);
-		digitalWrite(d, HIGH);
-		digitalWrite(g, HIGH);
-		digitalWrite(f, HIGH);
+		digitalWrite(a, LOW);
+		digitalWrite(b, LOW);
+		digitalWrite(c, LOW);
+		digitalWrite(d, LOW);
+		digitalWrite(g, LOW);
+		digitalWrite(f, LOW);
 		break;
 	}
 }
