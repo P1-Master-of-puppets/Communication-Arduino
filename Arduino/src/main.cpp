@@ -19,7 +19,7 @@
 
 volatile bool shouldSend_ = false; // Drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false; // Drapeau prêt à lire un message
-int btnA, btnB, btnM, btnLT, btnRT, btnJB, j_x, j_y;
+int btnA, btnB, btnM, btnLT, btnRT, btnJB, j_x, j_y, acc_x, acc_y, acc_z;
 unsigned long tempsFIN, currentTime;
 Compteur SG;
 
@@ -56,7 +56,7 @@ void setup()
   digitalWrite(PIN_LEDROUGE, HIGH);
 
   // Setup seven segments
-  SG.Setup(0);
+  SG.Setup(75);
 }
 
 /* Boucle principale (infinie) */
@@ -76,14 +76,17 @@ void loop()
   btnJB = digitalRead(PIN_BTN_JB);
   j_x = analogRead(PIN_J_X);
   j_y = analogRead(PIN_J_Y);
+  acc_x = analogRead(PIN_ACC_X);
+  acc_y = analogRead(PIN_ACC_Y);
+  acc_z = analogRead(PIN_ACC_Z);
   /*
-  Serial.print("j_x: ");
-  Serial.println(j_x);
-  Serial.print("j_y: ");
-  Serial.println(j_y);
+  Serial.print("acc_x: ");
+  Serial.println(acc_x);
+  Serial.print("acc_y: ");
+  Serial.println(acc_y);
+  Serial.print("acc_z: ");
+  Serial.println(acc_z);
   */
-  // potValue = analogRead(pinPOT);
-  // Serial.println(potValue);          // debug
   delay(10); // delais de 10 ms
 }
 
@@ -138,6 +141,15 @@ void sendMsg()
     {
       doc["J"] = "R";
     }
+  }
+  // Accelerometer, for some reason on détecte rien en y (gauche/droite)
+  if (acc_x > 450 || acc_x < 125 || acc_z > 400 || acc_z < 150) // Valeurs à ajuster au besoin
+  {
+    doc["AC"] = 1;
+  } 
+  else
+  {
+    doc["AC"] = 0;
   }
 
   // Serialisation
