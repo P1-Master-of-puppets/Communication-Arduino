@@ -28,10 +28,10 @@
 #define PIN_BTN_A 19
 
 // Bouton B
-#define PIN_BTN_B 20
+#define PIN_BTN_B 28
 
 // Bouton Menu
-#define PIN_BTN_M 21
+#define PIN_BTN_M 30
 
 // Bouton LT
 #define PIN_BTN_LT 23
