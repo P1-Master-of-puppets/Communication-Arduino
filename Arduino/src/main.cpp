@@ -35,17 +35,11 @@ void setup()
   
   // Setup Boutons
   pinMode(PIN_BTN_A, INPUT);
-  digitalWrite(PIN_BTN_A, LOW);
   pinMode(PIN_BTN_B, INPUT);
-  digitalWrite(PIN_BTN_B, LOW);
   pinMode(PIN_BTN_M, INPUT);
-  digitalWrite(PIN_BTN_M, LOW);
   pinMode(PIN_BTN_JB, INPUT);
-  digitalWrite(PIN_BTN_JB, LOW);
   pinMode(PIN_BTN_LT, INPUT);
-  digitalWrite(PIN_BTN_LT, LOW);
   pinMode(PIN_BTN_RT, INPUT);
-  digitalWrite(PIN_BTN_RT, LOW);
 
   // Setup LEDs
   pinMode(PIN_LEDVERT, OUTPUT);
