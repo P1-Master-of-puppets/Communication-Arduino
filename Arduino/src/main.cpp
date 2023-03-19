@@ -9,6 +9,7 @@
 #include "sevenSegment.h"
 #include "button.h"
 #include "joystick.h"
+#include "accelerometer.h"
 
 /*------------------------------ Constantes ---------------------------------*/
 
@@ -18,7 +19,6 @@
 
 volatile bool shouldSend_ = false; // Drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false; // Drapeau prêt à lire un message
-int acc_x, acc_y, acc_z;
 unsigned long tempsFIN, currentTime;
 Compteur SG;
 Button btnA(PIN_BTN_A, 'A');
@@ -28,6 +28,7 @@ Button btnLT(PIN_BTN_LT, 'L');
 Button btnRT(PIN_BTN_RT, 'R');
 Button btnJB(PIN_BTN_JB, 'G');  
 Joystick joystick(PIN_J_X, PIN_J_Y);
+Accelerometer accelerometer(PIN_ACC_X, PIN_ACC_Y, PIN_ACC_Z, 'Y');
 
 /*------------------------- Prototypes de fonctions -------------------------*/
 void sendMsg();
@@ -66,11 +67,7 @@ void loop()
   btnRT.update();
   btnJB.update();
   joystick.update();
-
-  acc_x = analogRead(PIN_ACC_X);
-  acc_y = analogRead(PIN_ACC_Y);
-  acc_z = analogRead(PIN_ACC_Z);
-
+  accelerometer.update();
   delay(10); // delais de 10 ms
 }
 
@@ -88,15 +85,6 @@ void sendMsg()
 {
   StaticJsonDocument<500> doc;
   // Elements du message
-  // Accelerometer, for some reason on détecte rien en y (gauche/droite)
-  if (acc_x > 450 || acc_x < 125 || acc_z > 400 || acc_z < 150) // Valeurs à ajuster au besoin
-  {
-    doc["AC"] = 1;
-  } 
-  else
-  {
-    doc["AC"] = 0;
-  }
 
   // Serialisation
   serializeJson(doc, Serial);

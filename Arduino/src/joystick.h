@@ -21,4 +21,4 @@ public:
     void update();
 };
 
-#endif
+#endif // JOYSTICK_H__
