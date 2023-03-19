@@ -17,6 +17,7 @@ Button btnRT(PIN_BTN_RT, 'R');
 Button btnJB(PIN_BTN_JB, 'G');  
 Joystick joystick(PIN_J_X, PIN_J_Y);
 Accelerometer accelerometer(PIN_ACC_X, PIN_ACC_Y, PIN_ACC_Z, 'Y');
+unsigned long tempsFIN; // pour le moteur vibrant
 
 void updateControllerValues(char input[]){
 
@@ -27,8 +28,14 @@ void updateControllerValues(char input[]){
     SG.Setup(nombre -1);
     break;
   case 'T': // Threat Level
-    break;
+    int nombre = (int)input[1];
+    if (nombre = 1) digitalWrite(PIN_LEDVERT, LOW);
+    if (nombre = 2) digitalWrite(PIN_LEDJAUNE, LOW);
+    if (nombre = 3) digitalWrite(PIN_LEDROUGE, LOW);
   case 'V': // Moteur Vibrant
+    int nombre = (int)input[1];
+    tempsFIN = nombre + millis();
+    digitalWrite(PIN_MV, 1);
     break;
   default:
     break;
@@ -92,5 +99,7 @@ void loop()
   joystick.update();
   accelerometer.update();
   receiveData();
+  if (millis() >= tempsFIN)
+    digitalWrite(PIN_MV, 0);
 }
 
