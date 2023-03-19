@@ -29,8 +29,17 @@ void updateControllerValues(char input[]){
     break;
   case 'T': // Threat Level
     int nombre = (int)input[1];
-    if (nombre = 1) digitalWrite(PIN_LEDVERT, LOW);
-    if (nombre = 2) digitalWrite(PIN_LEDJAUNE, LOW);
+    if (nombre = 1) 
+    {
+      digitalWrite(PIN_LEDVERT, LOW);
+      digitalWrite(PIN_LEDJAUNE, HIGH);
+      digitalWrite(PIN_LEDROUGE, HIGH);
+    }
+    if (nombre = 2) 
+    {
+      digitalWrite(PIN_LEDJAUNE, LOW);
+      digitalWrite(PIN_LEDROUGE, HIGH);
+    }
     if (nombre = 3) digitalWrite(PIN_LEDROUGE, LOW);
   case 'V': // Moteur Vibrant
     int nombre = (int)input[1];
@@ -77,11 +86,11 @@ void setup()
 
   // Setup LEDs
   pinMode(PIN_LEDVERT, OUTPUT);
-  digitalWrite(PIN_LEDVERT, LOW);
+  digitalWrite(PIN_LEDVERT, HIGH);
   pinMode(PIN_LEDJAUNE, OUTPUT);
   digitalWrite(PIN_LEDJAUNE, HIGH);
   pinMode(PIN_LEDROUGE, OUTPUT);
-  digitalWrite(PIN_LEDROUGE, LOW);
+  digitalWrite(PIN_LEDROUGE, HIGH);
 
   // Setup seven segments
   SG.Setup(0);
