@@ -6,22 +6,28 @@
 /*------------------------------ Librairies ---------------------------------*/
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <sevenSegment.h>
+#include "sevenSegment.h"
+#include "button.h"
+#include "joystick.h"
 
 /*------------------------------ Constantes ---------------------------------*/
 
 #define BAUD 115200 // Frequence de transmission serielle
-#define J_MAX_X 1024
-#define J_MAX_Y 1024
-#define J_TAILLE_DEADZONE 50
 
 /*---------------------------- Variables globales ---------------------------*/
 
 volatile bool shouldSend_ = false; // Drapeau prêt à envoyer un message
 volatile bool shouldRead_ = false; // Drapeau prêt à lire un message
-int btnA, btnB, btnM, btnLT, btnRT, btnJB, j_x, j_y, acc_x, acc_y, acc_z;
+int acc_x, acc_y, acc_z;
 unsigned long tempsFIN, currentTime;
 Compteur SG;
+Button btnA(PIN_BTN_A, 'A');
+Button btnB(PIN_BTN_B, 'B');
+Button btnM(PIN_BTN_M, 'M');
+Button btnLT(PIN_BTN_LT, 'L');
+Button btnRT(PIN_BTN_RT, 'R');
+Button btnJB(PIN_BTN_JB, 'G');  
+Joystick joystick(PIN_J_X, PIN_J_Y);
 
 /*------------------------- Prototypes de fonctions -------------------------*/
 void sendMsg();
@@ -32,55 +38,39 @@ void serialEvent();
 void setup()
 {
   Serial.begin(BAUD); // Initialisation de la communication serielle
-  
-  // Setup Boutons
-  pinMode(PIN_BTN_A, INPUT);
-  pinMode(PIN_BTN_B, INPUT);
-  pinMode(PIN_BTN_M, INPUT);
-  pinMode(PIN_BTN_JB, INPUT);
-  pinMode(PIN_BTN_LT, INPUT);
-  pinMode(PIN_BTN_RT, INPUT);
 
   // Setup LEDs
   pinMode(PIN_LEDVERT, OUTPUT);
-  digitalWrite(PIN_LEDVERT, HIGH);
+  digitalWrite(PIN_LEDVERT, LOW);
   pinMode(PIN_LEDJAUNE, OUTPUT);
-  digitalWrite(PIN_LEDJAUNE, LOW);
+  digitalWrite(PIN_LEDJAUNE, HIGH);
   pinMode(PIN_LEDROUGE, OUTPUT);
-  digitalWrite(PIN_LEDROUGE, HIGH);
+  digitalWrite(PIN_LEDROUGE, LOW);
 
   // Setup seven segments
-  SG.Setup(75);
+  SG.Setup(69);
 }
 
 /* Boucle principale (infinie) */
 void loop()
 {
-
   if (shouldRead_)
   {
     readMsg();
     sendMsg();
   }
-  btnA = digitalRead(PIN_BTN_A);
-  btnB = digitalRead(PIN_BTN_B);
-  btnM = digitalRead(PIN_BTN_M);
-  btnRT = digitalRead(PIN_BTN_RT);
-  btnLT = digitalRead(PIN_BTN_LT);
-  btnJB = digitalRead(PIN_BTN_JB);
-  j_x = analogRead(PIN_J_X);
-  j_y = analogRead(PIN_J_Y);
+  btnA.update();
+  btnB.update();
+  btnM.update();
+  btnLT.update();
+  btnRT.update();
+  btnJB.update();
+  joystick.update();
+
   acc_x = analogRead(PIN_ACC_X);
   acc_y = analogRead(PIN_ACC_Y);
   acc_z = analogRead(PIN_ACC_Z);
-  /*
-  Serial.print("acc_x: ");
-  Serial.println(acc_x);
-  Serial.print("acc_y: ");
-  Serial.println(acc_y);
-  Serial.print("acc_z: ");
-  Serial.println(acc_z);
-  */
+
   delay(10); // delais de 10 ms
 }
 
@@ -98,44 +88,6 @@ void sendMsg()
 {
   StaticJsonDocument<500> doc;
   // Elements du message
-  // doc["time"] = millis();
-  // doc["analog"] = potValue;
-  doc["A"] = btnA;
-  doc["B"] = btnB;
-  doc["M"] = btnM;
-  doc["RT"] = btnRT;
-  doc["LT"] = btnLT;
-  doc["JB"] = btnJB;
-  // Direction du joystick
-  if (!(j_x > (J_MAX_X/2 - J_TAILLE_DEADZONE/2) && j_x < (J_MAX_X/2 + J_TAILLE_DEADZONE/2) && j_y > (J_MAX_Y/2 - J_TAILLE_DEADZONE/2) && j_y < (J_MAX_Y/2 + J_TAILLE_DEADZONE/2)))
-  {
-    // Côté gauche
-    if (j_x >= J_MAX_X/2 && j_y > j_x)
-    {
-      doc["J"] = "U";
-    }
-    else if (j_x >= J_MAX_X/2 && j_y < -1 * j_x + J_MAX_Y)
-    {
-      doc["J"] = "D";
-    }
-    else if (j_x >= J_MAX_X/2)
-    {
-      doc["J"] = "L";
-    }
-    // Côté droit
-    if (j_x <= J_MAX_X/2 && j_y > -1 * j_x + J_MAX_Y)
-    {
-      doc["J"] = "U";
-    }
-    else if (j_x <= J_MAX_X/2 && j_y < j_x)
-    {
-      doc["J"] = "D";
-    }
-    else if (j_x <= J_MAX_X/2)
-    {
-      doc["J"] = "R";
-    }
-  }
   // Accelerometer, for some reason on détecte rien en y (gauche/droite)
   if (acc_x > 450 || acc_x < 125 || acc_z > 400 || acc_z < 150) // Valeurs à ajuster au besoin
   {

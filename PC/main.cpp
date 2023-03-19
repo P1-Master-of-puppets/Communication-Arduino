@@ -73,7 +73,7 @@ int main(){
         led_state = !led_state;
 
         // Bloquer le fil pour environ 1 sec
-        Sleep(1000); // 1000ms
+        Sleep(100); // 1000ms
     }
     return 0;
 }
