@@ -51,6 +51,6 @@ void Joystick::update()
             buffer[1] = 'R';
         else if (state == JoystickState::Left)
             buffer[1] = 'L';
-        Serial.write(buffer);
+        Serial.write(buffer, 2);
     }    
 }

@@ -24,6 +24,6 @@ void Button::update()
             buffer[1] = '1';
         else
             buffer[1] = '0';
-        Serial.write(buffer);
+        Serial.write(buffer, 2);
     }    
 }

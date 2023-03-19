@@ -137,6 +137,9 @@ void Display::Set(int number)
 		digitalWrite(g, LOW);
 		digitalWrite(f, LOW);
 		break;
+
+	default:
+	break;
 	}
 }
 
@@ -181,6 +184,9 @@ void Compteur::Reset()
 
 void Compteur::Setup(int valeur)
 {
+	if (valeur > 99)
+		return;
+	
 	dizaines = valeur / 10;
 	unites = valeur % 10;
 

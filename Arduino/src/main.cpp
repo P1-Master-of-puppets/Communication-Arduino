@@ -1,25 +1,13 @@
-/*
- * Auteurs: Jean-Samuel Lauzon
- * Date: Fevrier 2022
- */
-
-/*------------------------------ Librairies ---------------------------------*/
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include "sevenSegment.h"
 #include "button.h"
 #include "joystick.h"
 #include "accelerometer.h"
+#include <string.h>
 
-/*------------------------------ Constantes ---------------------------------*/
+#define BAUD 115200
 
-#define BAUD 115200 // Frequence de transmission serielle
-
-/*---------------------------- Variables globales ---------------------------*/
-
-volatile bool shouldSend_ = false; // Drapeau prêt à envoyer un message
-volatile bool shouldRead_ = false; // Drapeau prêt à lire un message
-unsigned long tempsFIN, currentTime;
 Compteur SG;
 Button btnA(PIN_BTN_A, 'A');
 Button btnB(PIN_BTN_B, 'B');
@@ -30,11 +18,51 @@ Button btnJB(PIN_BTN_JB, 'G');
 Joystick joystick(PIN_J_X, PIN_J_Y);
 Accelerometer accelerometer(PIN_ACC_X, PIN_ACC_Y, PIN_ACC_Z, 'Y');
 
-/*------------------------- Prototypes de fonctions -------------------------*/
-void sendMsg();
-void readMsg();
-void serialEvent();
-/*---------------------------- Fonctions "Main" -----------------------------*/
+void updateControllerValues(char input[]){
+
+  switch (input[0])
+  {
+  case 'S': // 7 Segment
+    int nombre = (int)input[1]; 
+    SG.Setup(nombre -1);
+    break;
+  case 'T': // Threat Level
+    break;
+  case 'V': // Moteur Vibrant
+    break;
+  default:
+    break;
+  }
+}
+
+char dest[128];
+void readData(){
+  char* caracter = new char[2];
+  caracter[1] = '\0';
+  while (Serial.available() > 0) {
+    caracter[0] = (char)Serial.read();
+    strcat(dest, caracter);
+  }
+  delete[] caracter;
+}
+
+void receiveData(){
+  readData();
+	if (strlen(dest) >= 3)
+    return;
+
+	//Make sure we only send 2 char at a time. Otherwise we might skip data and it will become extra weird
+  int len = strlen(dest);
+	if (len >= 2)
+	{
+		char inputs[2];
+		inputs[0] = dest[0];
+		inputs[1] = dest[1];
+    //We remove 3 caracters because the last one is an end of line caracter
+    memmove(dest, dest + 3, len);
+		updateControllerValues(inputs);
+	}
+}
 
 void setup()
 {
@@ -49,17 +77,12 @@ void setup()
   digitalWrite(PIN_LEDROUGE, LOW);
 
   // Setup seven segments
-  SG.Setup(69);
+  SG.Setup(0);
 }
 
 /* Boucle principale (infinie) */
 void loop()
 {
-  if (shouldRead_)
-  {
-    readMsg();
-    sendMsg();
-  }
   btnA.update();
   btnB.update();
   btnM.update();
@@ -68,92 +91,6 @@ void loop()
   btnJB.update();
   joystick.update();
   accelerometer.update();
-  delay(10); // delais de 10 ms
+  receiveData();
 }
 
-/*---------------------------Definition de fonctions ------------------------*/
-
-void serialEvent() { shouldRead_ = true; }
-
-/*---------------------------Definition de fonctions ------------------------
-Fonction d'envoi
-Entrée : Aucun
-Sortie : Aucun
-Traitement : Envoi du message
------------------------------------------------------------------------------*/
-void sendMsg()
-{
-  StaticJsonDocument<500> doc;
-  // Elements du message
-
-  // Serialisation
-  serializeJson(doc, Serial);
-
-  // Envoie
-  Serial.println();
-  shouldSend_ = false;
-}
-
-/*---------------------------Definition de fonctions ------------------------
-Fonction de reception
-Entrée : Aucun
-Sortie : Aucun
-Traitement : Réception du message
------------------------------------------------------------------------------*/
-void readMsg()
-{
-  // Lecture du message Json
-  StaticJsonDocument<500> doc;
-  JsonVariant parse_msg;
-
-  // Lecture sur le port Seriel
-  DeserializationError error = deserializeJson(doc, Serial);
-  shouldRead_ = false;
-
-  // Si erreur dans le message
-  if (error)
-  {
-    Serial.print("deserialize() failed: ");
-    Serial.println(error.c_str());
-    return;
-  }
-
-  // Analyse des éléments du message
-
-  // Threat level
-  parse_msg = doc["t"];
-  if (!parse_msg.isNull() || true)
-  {
-    if (doc["t"].as<int>() == 1 || true) // T = 1
-    {
-      digitalWrite(PIN_LEDVERT, 1);
-    } 
-    else if (doc["t"].as<int>() == 2) // T = 2
-    {
-      digitalWrite(PIN_LEDJAUNE, 1);
-    } 
-    else if (doc["t"].as<int>() == 3) // T = 3
-    {
-      digitalWrite(PIN_LEDROUGE, 1);
-    }
-  }
-
-  // Seven segments
-  parse_msg = doc["SG"];
-  if (!parse_msg.isNull())
-  {
-    SG.Setup(doc["SG"].as<int>());
-  }
-
-  // Moteur vibrant
-  parse_msg = doc["V"];
-  if (!parse_msg.isNull())
-  {
-    tempsFIN = doc["V"].as<int>() + millis();
-    digitalWrite(PIN_MV, 1);
-  }
-  else if (millis() >= tempsFIN)
-  {
-    digitalWrite(PIN_MV, 0);
-  }
-}

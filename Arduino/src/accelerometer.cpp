@@ -17,7 +17,7 @@ Accelerometer::~Accelerometer()
 void Accelerometer::update()
 {
     int acc_x = analogRead(_pin_x);
-    int acc_y = analogRead(_pin_y);
+    //int acc_y = analogRead(_pin_y);
     int acc_z = analogRead(_pin_z);
     bool state = 0;
     // For some reason on détecte rien en y (gauche/droite)
@@ -34,6 +34,6 @@ void Accelerometer::update()
             buffer[1] = '1';
         else
             buffer[1] = '0';
-        Serial.write(buffer);
+        Serial.write(buffer,2);
     }    
 }
