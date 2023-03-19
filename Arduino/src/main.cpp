@@ -20,29 +20,32 @@ Accelerometer accelerometer(PIN_ACC_X, PIN_ACC_Y, PIN_ACC_Z, 'Y');
 unsigned long tempsFIN; // pour le moteur vibrant
 
 void updateControllerValues(char input[]){
-
+  int nombre = (int)input[1];
+  nombre--;
   switch (input[0])
   {
   case 'S': // 7 Segment
-    int nombre = (int)input[1]; 
-    SG.Setup(nombre -1);
+    SG.Setup(nombre);
     break;
   case 'T': // Threat Level
-    int nombre = (int)input[1];
-    if (nombre = 1) 
+    if (nombre == 1) 
     {
       digitalWrite(PIN_LEDVERT, LOW);
       digitalWrite(PIN_LEDJAUNE, HIGH);
       digitalWrite(PIN_LEDROUGE, HIGH);
     }
-    else if (nombre = 2) 
+    else if (nombre == 2) 
     {
+      digitalWrite(PIN_LEDVERT, LOW);
       digitalWrite(PIN_LEDJAUNE, LOW);
       digitalWrite(PIN_LEDROUGE, HIGH);
     }
-    else if (nombre = 3) digitalWrite(PIN_LEDROUGE, LOW);
+    else if (nombre == 3){
+      digitalWrite(PIN_LEDVERT, LOW);
+      digitalWrite(PIN_LEDJAUNE, LOW);
+      digitalWrite(PIN_LEDROUGE, LOW);
+    }
   case 'V': // Moteur Vibrant
-    int nombre = (int)input[1];
     tempsFIN = nombre + millis();
     digitalWrite(PIN_MV, 1);
     break;
