@@ -35,12 +35,12 @@ void updateControllerValues(char input[]){
       digitalWrite(PIN_LEDJAUNE, HIGH);
       digitalWrite(PIN_LEDROUGE, HIGH);
     }
-    if (nombre = 2) 
+    else if (nombre = 2) 
     {
       digitalWrite(PIN_LEDJAUNE, LOW);
       digitalWrite(PIN_LEDROUGE, HIGH);
     }
-    if (nombre = 3) digitalWrite(PIN_LEDROUGE, LOW);
+    else if (nombre = 3) digitalWrite(PIN_LEDROUGE, LOW);
   case 'V': // Moteur Vibrant
     int nombre = (int)input[1];
     tempsFIN = nombre + millis();
