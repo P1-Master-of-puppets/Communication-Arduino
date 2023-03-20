@@ -6,7 +6,7 @@
 
 #define J_MAX_X 1024
 #define J_MAX_Y 1024
-#define J_TAILLE_DEADZONE 50
+#define J_TAILLE_DEADZONE 150
 
 class Joystick
 {
