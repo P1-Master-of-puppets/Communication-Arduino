@@ -11,11 +11,11 @@
 class Accelerometer
 {
 private:
+    unsigned long _lastUpdate;
     int _pin_x;
     int _pin_y;
     int _pin_z;
     char _prefix;
-    bool _lastState;
 public:
     Accelerometer(int pin_x, int pin_y, int pin_z, char prefix);
     ~Accelerometer();
