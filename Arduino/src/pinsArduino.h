@@ -50,3 +50,6 @@
 #define PIN_ACC_X A2
 #define PIN_ACC_Y A3
 #define PIN_ACC_Z A4
+
+// Détecteur de muons
+#define PIN_DECTM A5
