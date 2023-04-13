@@ -18,7 +18,6 @@ void DetecteurMuon::detection()
     buffer[0] = _prefix;
     if (valeur != 0) {
         i++;
-        Serial.print(i);
         if (i == 8)
             i = 1;
         char p = _pieces[i];
@@ -28,6 +27,6 @@ void DetecteurMuon::detection()
     else {
         i++;
         if (i == 8)
-            i = 1; 
+            i = 0; 
     }
 }
