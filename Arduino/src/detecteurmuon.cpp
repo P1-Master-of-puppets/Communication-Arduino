@@ -13,15 +13,15 @@ DetecteurMuon::~DetecteurMuon()
 
 void DetecteurMuon::detection()
 {
-    int valeur = analogRead(_pin);
+    delay(0.1);
+    int valeur = pulseIn(_pin, HIGH);
     char* buffer = new char[2];
     buffer[0] = _prefix;
     if (valeur != 0) {
         i++;
         if (i == 7)
             i = 0;
-        char p = _pieces[i];
-        buffer[1] = p;
+        buffer[1] = _pieces[i];
         Serial.write(buffer, 2);
     }
     else {
