@@ -4,6 +4,7 @@
 #include "button.h"
 #include "joystick.h"
 #include "accelerometer.h"
+#include "detecteurmuon.h"
 #include <string.h>
 
 #define BAUD 115200
@@ -17,6 +18,7 @@ Button btnRT(PIN_BTN_RT, 'R');
 Button btnJB(PIN_BTN_JB, 'G');  
 Joystick joystick(PIN_J_X, PIN_J_Y);
 Accelerometer accelerometer(PIN_ACC_X, PIN_ACC_Y, PIN_ACC_Z, 'Y');
+DetecteurMuon detectMuon(PIN_DECTM, 'P');
 unsigned long tempsFIN; // pour le moteur vibrant
 
 void updateControllerValues(char input[]){
@@ -110,6 +112,7 @@ void loop()
   btnJB.update();
   joystick.update();
   accelerometer.update();
+  detectMuon.detection();
   receiveData();
   if (millis() >= tempsFIN)
     digitalWrite(PIN_MV, 0);
