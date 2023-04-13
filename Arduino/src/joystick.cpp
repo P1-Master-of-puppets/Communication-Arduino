@@ -52,5 +52,6 @@ void Joystick::update()
         else if (state == JoystickState::Left)
             buffer[1] = 'L';
         Serial.write(buffer, 2);
+        delete[] buffer;
     }    
 }

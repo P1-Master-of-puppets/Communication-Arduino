@@ -31,5 +31,6 @@ void Accelerometer::update()
         buffer[1] = '1';
         
         Serial.write(buffer,2);
+        delete[] buffer;
     }    
 }
