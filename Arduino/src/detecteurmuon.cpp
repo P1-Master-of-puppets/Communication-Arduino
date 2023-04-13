@@ -18,15 +18,15 @@ void DetecteurMuon::detection()
     buffer[0] = _prefix;
     if (valeur != 0) {
         i++;
-        if (i == 8)
-            i = 1;
+        if (i == 7)
+            i = 0;
         char p = _pieces[i];
         buffer[1] = p;
         Serial.write(buffer, 2);
     }
     else {
         i++;
-        if (i == 8)
+        if (i == 7)
             i = 0; 
     }
 }
