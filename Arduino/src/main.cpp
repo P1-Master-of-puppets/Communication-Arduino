@@ -47,6 +47,7 @@ void updateControllerValues(char input[]){
       digitalWrite(PIN_LEDJAUNE, LOW);
       digitalWrite(PIN_LEDROUGE, LOW);
     }
+    break;
   case 'V': // Moteur Vibrant
     tempsFIN = nombre + millis();
     digitalWrite(PIN_MV, 1);
@@ -69,19 +70,20 @@ void readData(){
 
 void receiveData(){
   readData();
-	if (strlen(dest) >= 3)
-    return;
-
 	//Make sure we only send 2 char at a time. Otherwise we might skip data and it will become extra weird
   int len = strlen(dest);
-	if (len >= 2)
+	if (len >= 4)
 	{
-		char inputs[2];
-		inputs[0] = dest[0];
-		inputs[1] = dest[1];
+		char input1[2];
+		input1[0] = dest[0];
+		input1[1] = dest[1];
+    char input2[2];
+    input2[0] = dest[2];
+    input2[1] = dest[3];
     //We remove 3 caracters because the last one is an end of line caracter
-    memmove(dest, dest + 3, len);
-		updateControllerValues(inputs);
+    memmove(dest, dest + 5, len);
+		updateControllerValues(input1);
+		updateControllerValues(input2);
 	}
 }
 
@@ -90,6 +92,7 @@ void setup()
   Serial.begin(BAUD); // Initialisation de la communication serielle
 
   // Setup LEDs
+  pinMode(49, OUTPUT);
   pinMode(PIN_LEDVERT, OUTPUT);
   digitalWrite(PIN_LEDVERT, HIGH);
   pinMode(PIN_LEDJAUNE, OUTPUT);
